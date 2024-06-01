@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
                 'is_admin' => true
             ]);
         }
-
-        Category::factory(5)->create();
+        $this->call(NoteSeeder::class);
+        $this->call(CommentSeeder::class);
     }
 }

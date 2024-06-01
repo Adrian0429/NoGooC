@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,18 +31,14 @@ Route::get('/', function(){
 Route::post("/register", [UserController::class, "register"]);
 Route::post("/login", [UserController::class, "login"]);
 Route::get('/logout', [UserController::class, "logout"])->name('logout');
+Route::get('/', [NoteController::class, 'index'])->name('notes');
 
-// Route::group(['middleware' => ['auth']], function () {
-//     Route::get('/entry', function () {
-//         return view('entry', [
-//             'route' => 'entry',
-//         ]);
-//     });
+Route::group(['middleware' => ['auth']], function () {
 
-//     Route::post('/entry', [SurveyController::class, "entry"])->name('entry');
-//     Route::post('/saveCategory', [SurveyController::class, "saveCategory"])->name('saveCategory');
-//     Route::get('/history', [SurveyController::class, "history"])->name('history');
-//     Route::get('/export', [SurveyController::class, "export"])->name('export');
-// });
+    Route::post('/store', [NoteController::class, 'store'])->name('store');
+    Route::put('/notes/{id}', [NoteController::class, 'update'])->name('updateNote');
+    Route::delete('/notes/{id}', [NoteController::class, 'destroy'])->name('deleteNote');
+
+});
 
 

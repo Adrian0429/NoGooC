@@ -12,70 +12,49 @@
 
 <body>
     @include('sweetalert::alert')
-    <div class="bg-[#F8FCFF] w-screen">
-        <div class="h-nav p-5 flex gap-x-5">
-            <div
-                class="hidden md:flex md:flex-col md:justify-between border h-full w-[25%] rounded-lg p-5 bg-white drop-shadow-sm">
+    @include('partials/navbar')
+    @include('partials/modal')
 
-                @if (auth()->check() && auth()->user()->is_admin)
-                    <div class="fRow justify-between">
-                        <h2 class="textBlack font-medium">Keterangan Kategori</h2>
-                        <button data-modal-target="iconUpdate-modal" data-modal-toggle="iconUpdate-modal" class=""
-                            type="button">
-                            <img src="/Edit.svg" alt="">
-                        </button>
+    <div class="bg-[#F8FCFF] w-screen h-nav">
+        <div class="h-full flex flex-wrap m-10 border border-slate-400 rounded-md">
+
+            @foreach ($notes as $note)
+                <div id="note_{{ $note->id }}"
+                    class="border m-2 p-4 rounded-md w-[20%] h-[35%] flex flex-col justify-between">
+                    <div class="w-full h-[75%] gap-y-2 overflow-hidden">
+                        <h2 class="font-semibold border-b-2">{{ $note->title }}</h2>
+                        <p class="font-normal text-slate-700 text-md">{{ $note->content }}</p>
                     </div>
-                @else
-                    <h2 class="textBlack font-medium">Keterangan Kategori</h2>
-                @endif
+                    @if (auth()->check() && auth()->user()->is_admin)
+                        <div class="w-full h-fit flex flex-row justify-between">
+                            <form action="{{ route('deleteNote', ['id' => $note->id]) }}" method="POST" class="">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="bg-red-500 hover:bg-red-600 text-white font-bold px-2 py-2 rounded-md">Delete
+                                    Note</button>
+                            </form>
 
+                            <button type="button" data-modal-target="update-modal{{ $note->id }}"
+                                data-modal-toggle="update-modal{{ $note->id }}"
+                                class="bg-blue-500 hover:bg-blue-600 text-white font-bold px-2 py-2 rounded-md">Update
+                                Note</button>
+                            <x-update-modal :id="$note->id" />
 
-
-                <div class="h-full w-full md:w-[75%] flex flex-col gap-y-2">
-                    <h2 class="text-xs text-graySecondary">Filter dan Lokasi</h2>
-                    <div class="flex flex-col md:flex-row text-grayPrimary items-center">
-                        <h3 class="text-xs sm:textFilter font-medium">TANGGAL</h3>
-
-                        <div class="flex justify-center items-center mr-5">
-                            <input datepicker datepicker-format="yyyy-mm-dd" type="date" name="start"
-                                id="startDateInput"
-                                class="border-none text-center focus:ring-0 focus: pFormActive font-light"
-                                placeholder="Select date" value="{{ $filter['start_date'] ?? '' }}">
-
-                            <p>-</p>
-
-                            <input datepicker datepicker-format="yyyy-mm-dd" type="date" name="end"
-                                id="endDateInput"
-                                class="border-none text-center focus:ring-0 focus: pFormActive font-light"
-                                placeholder="Select date end" value="{{ $filter['end_date'] ?? '' }}">
                         </div>
-
-                        <h3 class="textFilter font-medium">TINGGI</h3>
-
-                        <div class="flex justify-center items-center mr-5">
-                            <input name="min" type="number" id="heightInput"
-                                class="border-none ml-2 w-[3vw] p-0 text-center focus:ring-0 focus:border-none pFormActive font-light"
-                                placeholder="0" min="0" max="1000" value="{{ $filter['min_height'] ?? '' }}">
-
-                            <p>-</p>
-
-                            <input name="max" type="number" id="heightInput"
-                                class="border-none ml-2 w-[3vw] p-0 text-center focus:ring-0 focus:border-none pFormActive font-light"
-                                placeholder="0" min="0" value="{{ $filter['max_height'] ?? '' }}">
-                            <p class="text-gray-500 font-light">Centimeter</p>
-                        </div>
-
-                        <x-button message="Filter" type="submit" color="Primary" link=""
-                            classname="px-5 py-[0.4rem] rounded-lg text-base" icons="" />
-                    </div>
-
-
-                    <div id="map" class="border h-full rounded-lg bg-white drop-shadow-sm"></div>
+                    @endif
                 </div>
+            @endforeach
 
-            </div>
 
+            <button class="border m-2 p-4 rounded-md w-[17.5%] h-[35%]" data-modal-target="authentication-modal"
+                data-modal-toggle="authentication-modal">
+                <img src="add.png" alt="" class="object-fit mx-auto">
+            </button>
         </div>
+    </div>
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/datepicker.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/datepicker.min.js"></script>
